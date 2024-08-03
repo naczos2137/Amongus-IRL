@@ -48,10 +48,4 @@ class Game:
                 await player.game_message.delete()
             await send(player.discord_object, embed=embed)
 
-    # def startVote(self):
-    #     self.votes.clear()
-    #     for player in self.players_alive:
-    #         self.votes[player] = 0
-    #
-    # def vote(self, player: Player):
-    #     self.votes[player] += 1
+

@@ -50,7 +50,7 @@ class GameButtons(discord.ui.View):
     async def button_task(self, button, interaction):
         if Config.dev_mode: print(self.player, "task zriobiony")
         self.player.new_task()
-        await self.player.perk_getter(button=button)
+        await self.player.credit_getter(button=button)
         await self.player.send_game_message()
 
     @discord.ui.button(label="Rola", style=discord.ButtonStyle.primary)
@@ -108,7 +108,29 @@ class VoteList(discord.ui.View):
 
     async def select_callback(self, interaction: discord.Interaction):
         selected_option = interaction.data['values'][0]
-        print(f'You voted for: {selected_option}')
+        self.game.EM.vote(selected_option)
+        print(f'Zagłosowałeś na: {selected_option}')
 
     def players_select_options(self):
+        return [discord.SelectOption(label=str(player)) for player in self.game.players_alive]
+
+
+class Shop(discord.ui.View):
+    def __init__(self, player: Player.Player, game: Game.Game):
+        super().__init__()
+        self.player = player
+        self.game = game
+
+        self.select_options = [discord.SelectOption(label=str(player)) for player in self.game.players_alive]
+
+        select = discord.ui.Select(placeholder="Produkty...", min_values=1, max_values=99,
+                                   options=self.list_perks(), custom_id="shop_select")
+        select.callback = self.select_callback
+        self.add_item(select)
+
+    async def select_callback(self, interaction: discord.Interaction):
+        selected_option = interaction.data['values'][0]
+        print(f'You voted for: {selected_option}')
+
+    def list_perks(self):
         return [discord.SelectOption(label=str(player)) for player in self.game.players_alive]
